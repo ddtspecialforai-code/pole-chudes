@@ -249,6 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:'system-ui',sans-serif;m
     </div>
 
     <div class="section-title">Загаданное слово</div>
+    <div class="category-value" id="gameCategory" style="font-size:.85rem;margin-bottom:2px;text-align:center"></div>
     <div class="word-board" id="wordBoard"></div>
 
     <div class="section-title">Выберите букву</div>
@@ -416,7 +417,7 @@ function spinWheel(){
   state.isSpinning=true; isSpinningAnim=true; $('spinBtn').disabled=true;
   $('sectorResult').classList.remove('show');
   setStatus('Барабан крутится...','active');
-  spinVelocity=15+Math.random()*20; spinDecay=.975+Math.random()*.015;
+  spinVelocity=9+Math.random()*12; spinDecay=.963+Math.random()*.015;
   state.currentSector=null; state.isWaitingForGuess=false; state.plusMode=false;
   document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
   function anim(){
@@ -618,6 +619,7 @@ function startGame(){
   const entry=pickWord(theme,{word:customWord,cat:customCat});
   state.currentWord=entry.word; state.currentCategory=entry.cat;
   buildWordBoard(state.currentWord);
+  $('gameCategory').textContent=state.currentCategory;
   document.querySelectorAll('.letter-btn').forEach(b=>{b.disabled=true;b.className='letter-btn'});
   $('setupScreen').classList.remove('active');
   $('gameScreen').classList.add('active');
