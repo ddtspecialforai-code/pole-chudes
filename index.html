@@ -417,11 +417,11 @@ function spinWheel(){
   state.isSpinning=true; isSpinningAnim=true; $('spinBtn').disabled=true;
   $('sectorResult').classList.remove('show');
   setStatus('Барабан крутится...','active');
-  spinVelocity=9+Math.random()*12; spinDecay=.963+Math.random()*.015;
+  spinVelocity=15+Math.random()*20; spinDecay=.975+Math.random()*.015;
   state.currentSector=null; state.isWaitingForGuess=false; state.plusMode=false;
   document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
   function anim(){
-    wheelAngle+=spinVelocity*.02; spinVelocity*=spinDecay; drawWheel(wheelAngle);
+    wheelAngle+=spinVelocity*.036; spinVelocity*=spinDecay; drawWheel(wheelAngle);
     if(spinVelocity>MIN_SPIN)animId=requestAnimationFrame(anim);
     else{isSpinningAnim=false;onSectorLanded(getSector(wheelAngle))}
   }
@@ -531,13 +531,13 @@ function nextPlayer(){
   state.streak=0; state.isSpinning=false;
   document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
   updateTurnUI();
-  setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
+  $('spinBtn').disabled=false;
 }
 
 function finishRound(){
   state.isSpinning=false;
   document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
-  setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
+  $('spinBtn').disabled=false;
 }
 
 function updateAll(){
