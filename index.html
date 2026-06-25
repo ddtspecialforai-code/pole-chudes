@@ -264,7 +264,7 @@ body{background:var(--bg);color:var(--text);font-family:'system-ui',sans-serif;m
     <div class="winner-name" id="winnerName"></div>
     <div class="word-answer" id="winWord"></div>
     <div class="score-final">Счёт победителя: <span id="winScore">0</span> очков</div>
-    <button class="btn btn-gold" id="playAgainBtn">Играть ещё</button>
+    <button class="btn btn-gold" id="playAgainBtn" onclick="window.playAgain()">Играть ещё</button>
   </div>
 </div>
 
@@ -688,7 +688,8 @@ buildAlphabet(); populateThemes(); setupPlayerUI(); resizeCanvas();
 $('playerCount').addEventListener('change',setupPlayerUI);
 $('startBtn').addEventListener('click',startGame);
 $('spinBtn').addEventListener('click',spinWheel);
-$('playAgainBtn').addEventListener('click',()=>{stopConfetti();$('winOverlay').classList.remove('show');startGame()});
+function window.playAgain(){stopConfetti();$('winOverlay').classList.remove('show');startGame()}
+$('playAgainBtn').addEventListener('click',window.playAgain);
 window.addEventListener('resize',resizeCanvas);
 
 // Rules
