@@ -528,12 +528,14 @@ function checkWin(){
 function nextPlayer(){
   state.currentPlayer=(state.currentPlayer+1)%state.players.length;
   state.streak=0; state.isSpinning=false;
+  document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
   updateTurnUI();
   setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
 }
 
 function finishRound(){
   state.isSpinning=false;
+  document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
   setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
 }
 
