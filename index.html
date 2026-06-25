@@ -688,8 +688,7 @@ buildAlphabet(); populateThemes(); setupPlayerUI(); resizeCanvas();
 $('playerCount').addEventListener('change',setupPlayerUI);
 $('startBtn').addEventListener('click',startGame);
 $('spinBtn').addEventListener('click',spinWheel);
-function window.playAgain(){stopConfetti();$('winOverlay').classList.remove('show');startGame()}
-$('playAgainBtn').addEventListener('click',window.playAgain);
+window.playAgain=function(){stopConfetti();$('winOverlay').classList.remove('show');startGame()};$('playAgainBtn').addEventListener('click',window.playAgain);
 window.addEventListener('resize',resizeCanvas);
 
 // Rules
