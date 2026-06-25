@@ -622,6 +622,7 @@ function startGame(){
   updateAll(); $('roundDisplay').textContent=state.round;
   $('spinBtn').disabled=false; $('sectorResult').classList.remove('show');
   $('winOverlay').classList.remove('show'); stopConfetti();
+  setTimeout(resizeCanvas, 50);
   setStatus('Раунд '+state.round+'. Ход: '+state.players[0].name,'active');
 }
 
