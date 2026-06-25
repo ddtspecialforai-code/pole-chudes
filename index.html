@@ -475,30 +475,40 @@ function onLetterClick(letter){
   const indices=[];
   for(let i=0;i<state.hiddenLetters.length;i++)if(state.hiddenLetters[i].toLowerCase()===letter.toLowerCase())indices.push(i);
 
-  if(state.plusMode){
+  try {
+    if(state.plusMode){
+      if(indices.length>0){
+        revealLetters(indices); btn.classList.add('correct');
+        setStatus('Открыто!','success');
+        state.plusMode=false; state.isWaitingForGuess=false;
+        if(checkWin())return; finishRound();
+      } else {
+        btn.classList.add('wrong'); state.guessedLetters.delete(letter);
+        setStatus('Буквы нет. Выберите другую!','error'); enableAlphabet(true);
+      }
+      return;
+    }
+
     if(indices.length>0){
-      revealLetters(indices); btn.classList.add('correct');
-      setStatus('Открыто! Осталось '+state.revealedLetters.size+'/'+state.hiddenLetters.length+' букв','success');
-      state.plusMode=false; state.isWaitingForGuess=false;
+      btn.classList.add('correct'); revealLetters(indices);
+      const val=state.currentSector?state.currentSector.value:100;
+      const pts=val*indices.length;
+      state.players[state.currentPlayer].score+=pts;
+      state.streak+=indices.length;
+      updateAll();
+      setStatus('Есть! Буква "'+letter+'" — '+indices.length+' раз(а)! +'+pts+' очков','success');
+      state.isWaitingForGuess=false;
       if(checkWin())return; finishRound();
     } else {
-      btn.classList.add('wrong'); state.guessedLetters.delete(letter);
-      setStatus('Этой буквы нет. Выберите другую!','error'); enableAlphabet(true);
+      btn.classList.add('wrong'); state.streak=0; updateAll();
+      setStatus('Нет буквы "'+letter+'"!','error');
+      state.isWaitingForGuess=false;
+      nextPlayer();
     }
-    return;
-  }
-
-  if(indices.length>0){
-    btn.classList.add('correct'); revealLetters(indices);
-    const pts = (state.currentSector && state.currentSector.value || 100) * indices.length;
-    state.players[state.currentPlayer].score+=pts; state.streak+=indices.length;
-    updateAll();
-    setStatus('Есть! Буква "'+letter+'" — '+indices.length+' раз(а)! +'+pts+' очков','success');
+  } catch(e) {
+    setStatus('Ошибка, попробуйте снова','error');
     state.isWaitingForGuess=false;
-    if(checkWin())return; finishRound();
-  } else {
-    btn.classList.add('wrong'); state.streak=0; updateAll();
-    setStatus('Нет буквы "'+letter+'"!','error'); state.isWaitingForGuess=false; nextPlayer();
+    finishRound();
   }
 }
 
