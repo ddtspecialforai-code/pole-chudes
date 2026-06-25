@@ -490,7 +490,7 @@ function onLetterClick(letter){
 
   if(indices.length>0){
     btn.classList.add('correct'); revealLetters(indices);
-    const pts=state.currentSector.value*indices.length;
+    const pts = (state.currentSector && state.currentSector.value || 100) * indices.length;
     state.players[state.currentPlayer].score+=pts; state.streak+=indices.length;
     updateAll();
     setStatus('Есть! Буква "'+letter+'" — '+indices.length+' раз(а)! +'+pts+' очков','success');
