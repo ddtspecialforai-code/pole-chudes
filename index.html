@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Поле Чудес</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Roboto:wght@400;500;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#1a0f0a; --panel:#2d1a10; --gold:#d4a843; --gold-light:#f0d080;
+  --gold-dark:#a07830; --red:#c0392b; --red-bright:#e74c3c; --green:#27ae60;
+  --green-bright:#2ecc71; --blue:#2980b9; --text:#f0e6d0; --text-dim:#8a7a60;
+}
+
+body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;background-image:radial-gradient(ellipse at center top,#2d1a10 0%,#1a0f0a 70%);overflow-x:hidden}
+
+/* ---- Header ---- */
+.header{width:100%;text-align:center;padding:16px 20px 8px;background:linear-gradient(180deg,rgba(212,168,67,0.15) 0%,transparent 100%);position:relative}
+.header h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(212,168,67,0.3),0 2px 4px rgba(0,0,0,0.5);letter-spacing:6px;display:inline-block}
+.header h1 span{color:var(--gold-light)}
+.header-actions{position:absolute;top:50%;right:20px;transform:translateY(-50%);display:flex;gap:8px}
+.btn-ghost{background:transparent;border:1px solid var(--gold-dark);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.78rem;cursor:pointer;font-family:'Roboto',sans-serif;transition:.2s;text-transform:uppercase;letter-spacing:1px}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ---- Game Header Bar ---- */
+.game-header{display:flex;justify-content:center;align-items:center;gap:24px;padding:6px 0;width:100%;max-width:800px;flex-wrap:wrap}
+.stat{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--text-dim)}
+.stat .val{font-size:1.3rem;font-weight:700;color:var(--gold-light);min-width:44px;text-align:center;transition:.3s}
+.stat .lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:1px}
+.turn-indicator{font-size:.95rem;color:var(--gold);font-weight:500;text-align:center;min-width:120px}
+
+/* ---- Main ---- */
+.main-area{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:700px;padding:4px 20px 24px;flex:1}
+
+/* ---- Setup Screen ---- */
+.screen{display:none;width:100%;flex-direction:column;align-items:center;gap:16px}
+.screen.active{display:flex}
+
+.setup-card{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:1px solid #5a3a20;border-radius:16px;padding:28px 32px;max-width:500px;width:100%}
+.setup-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);margin-bottom:16px;text-align:center}
+
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+
+.form-select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.95rem;font-family:'Roboto',sans-serif;cursor:pointer;outline:none;transition:.2s}
+.form-select:focus{border-color:var(--gold)}
+.form-select option{background:#2a1810;color:var(--text)}
+
+.player-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.player-num{width:28px;text-align:center;color:var(--gold-dark);font-weight:700;font-size:.85rem}
+.player-input{flex:1;padding:8px 12px;border-radius:6px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.9rem;font-family:'Roboto',sans-serif;outline:none;transition:.2s}
+.player-input:focus{border-color:var(--gold)}
+.player-input::placeholder{color:#5a3a20}
+.player-color{width:24px;height:24px;border-radius:50%;border:2px solid #5a3a20;flex-shrink:0}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 30px;border:none;border-radius:8px;font-family:'Roboto',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:1px}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;box-shadow:0 4px 15px rgba(212,168,67,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(212,168,67,0.4)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-start{font-size:1.1rem;padding:14px 40px;margin-top:8px;width:100%}
+
+/* ---- Wheel ---- */
+.wheel-container{position:relative;width:320px;height:320px;margin:0 auto}
+
+.wheel-outer-ring{position:absolute;inset:-12px;border-radius:50%;background:conic-gradient(from 0deg,#d4a843,#a07830,#d4a843,#a07830,#d4a843,#a07830,#d4a843,#a07830,#d4a843,#a07830,#d4a843,#a07830);padding:4px;box-shadow:0 0 30px rgba(212,168,67,0.2),inset 0 0 20px rgba(0,0,0,0.5)}
+.wheel-inner{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:#1a0f0a}
+#wheelCanvas{width:100%;height:100%;display:block}
+
+.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f0d080,#a07830);border:3px solid #d4a843;box-shadow:0 0 20px rgba(212,168,67,0.4);z-index:5;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:#1a0f0a}
+.pointer{position:absolute;top:-20px;left:50%;transform:translateX(-50%);z-index:10;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:26px solid var(--gold);filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6))}
+.pointer::after{content:'';position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--gold)}
+
+.sector-result{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(26,15,10,0.92);border:2px solid var(--gold);border-radius:14px;padding:16px 28px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s;min-width:180px;backdrop-filter:blur(8px)}
+.sector-result.show{opacity:1;pointer-events:auto}
+.sector-result .sector-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold-light);margin-bottom:2px}
+.sector-result .sector-desc{font-size:.85rem;color:var(--text-dim)}
+.sector-result .sector-name.bankrupt{color:var(--red-bright)}
+.sector-result .sector-name.prize{color:var(--green-bright)}
+.sector-result .sector-name.plus{color:var(--blue)}
+
+/* ---- Word Board ---- */
+.word-board{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;padding:10px 0;min-height:70px}
+.letter-tile{width:42px;height:50px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;font-family:'Playfair Display',serif;text-transform:uppercase;border-radius:6px;transition:.5s cubic-bezier(.34,1.56,.64,1);position:relative}
+.letter-tile.hidden{background:linear-gradient(145deg,#3a2518,#2a1810);border:2px solid #5a3a20;color:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+.letter-tile.hidden::after{content:'?';position:absolute;color:var(--gold-dark);font-size:.9rem;opacity:.5}
+.letter-tile.revealed{background:linear-gradient(145deg,#3a2a15,#2a1a0a);border:2px solid var(--gold);color:var(--gold-light);box-shadow:0 0 12px rgba(212,168,67,0.2);transform:scale(1.03)}
+.letter-tile.space{background:transparent;border:none;box-shadow:none}
+.letter-tile.space::after{display:none}
+.letter-tile.reveal-anim{animation:revealPop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes revealPop{0%{transform:scale(1)}40%{transform:scale(1.2);background:var(--gold);color:#1a0f0a}100%{transform:scale(1.03)}}
+
+/* ---- Alphabet ---- */
+.alphabet{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:520px;padding:4px 0}
+.letter-btn{width:34px;height:36px;border:1px solid #5a3a20;border-radius:4px;background:linear-gradient(145deg,#3a2518,#2a1810);color:var(--text);font-size:.88rem;font-weight:500;cursor:pointer;transition:.15s;text-transform:uppercase;font-family:'Roboto',sans-serif;padding:0}
+.letter-btn:hover:not(:disabled){background:linear-gradient(145deg,#5a3a20,#3a2518);border-color:var(--gold);transform:translateY(-1px)}
+.letter-btn:disabled{opacity:.22;cursor:not-allowed;background:#1a0f0a;border-color:#2a1a10}
+.letter-btn.correct{opacity:1!important;background:linear-gradient(145deg,#1a4a20,#0a2a10)!important;border-color:var(--green)!important;color:var(--green-bright)!important}
+.letter-btn.wrong{opacity:.3!important;background:linear-gradient(145deg,#4a1a10,#2a0a00)!important;border-color:var(--red)!important}
+
+/* ---- Controls ---- */
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:2px 0}
+.btn-spin{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;font-size:1.05rem;padding:12px 32px;box-shadow:0 4px 15px rgba(212,168,67,0.3)}
+.btn-spin:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 25px rgba(212,168,67,0.4)}
+.btn-spin:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ---- Status ---- */
+.status-box{text-align:center;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:500px}
+.status-text{font-size:1rem;color:var(--text-dim);transition:.3s}
+.status-text.active{color:var(--gold-light);font-size:1.1rem}
+.status-text.error{color:var(--red-bright)}
+.status-text.success{color:var(--green-bright)}
+
+/* ---- Section titles ---- */
+.section-title{font-family:'Playfair Display',serif;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:3px;margin-top:4px}
+
+/* ---- Players Score Table ---- */
+.players-scores{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;width:100%;padding:4px 0}
+.player-score-card{border:1px solid #5a3a20;border-radius:10px;padding:8px 16px;text-align:center;min-width:80px;transition:.3s;background:linear-gradient(145deg,#2d1a10,#1a0f0a)}
+.player-score-card.active{border-color:var(--gold);box-shadow:0 0 15px rgba(212,168,67,0.2)}
+.player-score-card .p-name{font-size:.75rem;color:var(--text-dim);margin-bottom:2px}
+.player-score-card .p-score{font-size:1.3rem;font-weight:700;font-family:'Playfair Display',serif}
+.player-score-card .p-turn-label{font-size:.55rem;text-transform:uppercase;color:var(--gold);letter-spacing:1px;display:none}
+.player-score-card.active .p-turn-label{display:block}
+
+/* ---- Win Overlay ---- */
+.win-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.win-overlay.show{display:flex}
+.win-modal{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:2px solid var(--gold);border-radius:20px;padding:36px 44px;text-align:center;max-width:420px;box-shadow:0 0 60px rgba(212,168,67,0.2);animation:winZoom .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes winZoom{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.win-modal h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);margin-bottom:6px}
+.win-modal .winner-name{font-size:1.1rem;color:var(--gold-light);margin-bottom:4px}
+.win-modal .word-answer{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold-light);margin:8px 0;letter-spacing:4px;text-transform:uppercase}
+.win-modal .score-final{font-size:1rem;color:var(--text-dim);margin:4px 0 16px}
+.win-modal .score-final span{color:var(--gold-light);font-size:1.3rem;font-weight:700}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;padding:12px 32px}
+#confettiCanvas{position:fixed;inset:0;z-index:101;pointer-events:none}
+
+/* ---- Rules overlay ---- */
+.rules-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.rules-overlay.show{display:flex}
+.rules-modal{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:2px solid var(--gold);border-radius:20px;padding:32px 36px;max-width:560px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:0 0 60px rgba(212,168,67,0.2)}
+.rules-modal h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);margin-bottom:14px;text-align:center}
+.rules-section{margin-bottom:16px}
+.rules-section h3{font-size:1rem;color:var(--gold-light);margin-bottom:6px;font-family:'Playfair Display',serif}
+.rules-section ul{list-style:none;padding:0}
+.rules-section li{padding:3px 0 3px 20px;position:relative;font-size:.88rem;color:var(--text-dim);line-height:1.5}
+.rules-section li::before{content:'◆';position:absolute;left:0;color:var(--gold-dark);font-size:.6rem;top:7px}
+.rules-section p{font-size:.88rem;color:var(--text-dim);line-height:1.5}
+.rules-close{display:flex;justify-content:center;margin-top:14px}
+
+/* ---- Responsive ---- */
+@media(max-width:500px){
+  .header h1{font-size:1.4rem;letter-spacing:3px}
+  .header-actions{position:static;transform:none;justify-content:center;margin-top:6px}
+  .wheel-container{width:260px;height:260px}
+  .wheel-outer-ring{inset:-8px}
+  .wheel-center{width:38px;height:38px;font-size:.9rem}
+  .pointer{top:-16px;border-left-width:10px;border-right-width:10px;border-top-width:20px}
+  .stat .val{font-size:1.05rem;min-width:32px}
+  .game-header{gap:12px}
+  .letter-tile{width:32px;height:40px;font-size:1.1rem}
+  .letter-btn{width:29px;height:32px;font-size:.75rem}
+  .btn-spin{padding:10px 22px;font-size:.95rem}
+  .setup-card{padding:20px 18px}
+  .win-modal{padding:24px 20px}
+  .rules-modal{padding:20px 18px}
+  .sector-result{padding:12px 20px;min-width:150px}
+  .sector-result .sector-name{font-size:1.15rem}
+}
+</style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<div class="header">
+  <h1>ПОЛЕ <span>ЧУДЕС</span></h1>
+  <div class="header-actions">
+    <button class="btn-ghost" id="rulesBtn">📖 Правила</button>
+  </div>
+</div>
+
+<!-- Scores bar (game screen) -->
+<div class="game-header" id="gameHeader">
+  <div class="stat"><div class="val" id="scoreDisplay">0</div><div class="lbl">Очки</div></div>
+  <div class="stat"><div class="val" id="roundDisplay">0</div><div class="lbl">Раунд</div></div>
+  <div class="turn-indicator" id="turnIndicator">—</div>
+</div>
+
+<div class="main-area">
+  <!-- ===== SETUP SCREEN ===== -->
+  <div class="screen active" id="setupScreen">
+    <div class="setup-card">
+      <h2>🎡 Настройка игры</h2>
+
+      <div class="form-group">
+        <label>Количество игроков</label>
+        <select class="form-select" id="playerCount">
+          <option value="1">1 игрок</option>
+          <option value="2" selected>2 игрока</option>
+          <option value="3">3 игрока</option>
+          <option value="4">4 игрока</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="playerNames">
+        <label>Имена игроков</label>
+      </div>
+
+      <div class="form-group">
+        <label>Тематика</label>
+        <select class="form-select" id="themeSelect">
+          <option value="all">🎲 Все темы (перемешать)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Или своё слово</label>
+        <div style="display:flex;gap:8px">
+          <input class="form-select" id="customWord" placeholder="Введите слово..." style="flex:1;font-family:'Roboto',sans-serif">
+          <input class="form-select" id="customCategory" placeholder="Категория" style="width:120px;font-family:'Roboto',sans-serif">
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-start" id="startBtn">Начать игру!</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div class="screen" id="gameScreen">
+    <div class="players-scores" id="playersScores"></div>
+
+    <div class="wheel-container">
+      <div class="wheel-outer-ring"><div class="wheel-inner"><canvas id="wheelCanvas"></canvas><div class="wheel-center">ПЧ</div></div></div>
+      <div class="pointer"></div>
+      <div class="sector-result" id="sectorResult">
+        <div class="sector-name" id="sectorName">100</div>
+        <div class="sector-desc" id="sectorDesc">очков</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-spin" id="spinBtn">Крутить барабан!</button>
+    </div>
+
+    <div class="status-box">
+      <div class="status-text" id="statusText">Нажмите «Крутить барабан!»</div>
+    </div>
+
+    <div class="section-title">Загаданное слово</div>
+    <div class="word-board" id="wordBoard"></div>
+
+    <div class="section-title">Выберите букву</div>
+    <div class="alphabet" id="alphabet"></div>
+  </div>
+</div>
+
+<!-- Win overlay -->
+<div class="win-overlay" id="winOverlay">
+  <div class="win-modal">
+    <h2>🎉 Победа!</h2>
+    <div class="winner-name" id="winnerName"></div>
+    <div class="word-answer" id="winWord"></div>
+    <div class="score-final">Счёт победителя: <span id="winScore">0</span> очков</div>
+    <button class="btn btn-gold" id="playAgainBtn">Играть ещё</button>
+  </div>
+</div>
+
+<!-- Rules overlay -->
+<div class="rules-overlay" id="rulesOverlay">
+  <div class="rules-modal">
+    <h2>📖 Правила игры</h2>
+
+    <div class="rules-section">
+      <h3>🎯 Цель игры</h3>
+      <p>Отгадать загаданное слово, называя буквы по одной. Побеждает игрок, который откроет последнюю букву слова.</p>
+    </div>
+
+    <div class="rules-section">
+      <h3>🎡 Барабан</h3>
+      <p>Перед ходом игрок крутит барабан, который определяет цену угаданной буквы или специальный сектор.</p>
+      <ul>
+        <li><b>Очки (100–1000)</b> — назвав букву, игрок получает эту сумму, умноженную на количество таких букв в слове</li>
+        <li><b>БАНКРОТ</b> — все очки игрока сгорают, ход переходит к следующему</li>
+        <li><b>ПРИЗ</b> — игрок получает 500 очков</li>
+        <li><b>ПЛЮС</b> — можно открыть любую букву бесплатно (даже если такой буквы нет в слове)</li>
+        <li><b>×2</b> — очки игрока удваиваются</li>
+        <li><b>0</b> — ход без последствий, можно крутить снова</li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>🔤 Угадывание</h3>
+      <ul>
+        <li>После остановки барабана игрок называет букву русского алфавита</li>
+        <li>Если буква есть в слове — она открывается, и игрок получает очки</li>
+        <li>Игрок ходит снова, пока угадывает буквы</li>
+        <li>Если буквы нет — ход переходит к следующему игроку</li>
+        <li>Нельзя называть уже открытую или уже названную букву</li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>👥 Очередь</h3>
+      <ul>
+        <li>Игроки ходят по очереди по кругу</li>
+        <li>После правильной буквы игрок ходит снова</li>
+        <li>После ошибки, банкрота или приза ход переходит дальше</li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>🏆 Победа</h3>
+      <p>Игрок, открывший последнюю букву слова, побеждает! Его счёт фиксируется, и можно начать новый раунд.</p>
+    </div>
+
+    <div class="rules-close">
+      <button class="btn btn-gold" id="rulesCloseBtn">Понятно!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SECTORS = [
+  {label:'100',type:'points',value:100,desc:'очков'},{label:'200',type:'points',value:200,desc:'очков'},
+  {label:'300',type:'points',value:300,desc:'очков'},{label:'500',type:'points',value:500,desc:'очков'},
+  {label:'1000',type:'points',value:1000,desc:'очков'},{label:'БАНКРОТ',type:'bankrupt',value:0,desc:'Все очки сгорают!'},
+  {label:'ПРИЗ',type:'prize',value:0,desc:'Вы получаете приз — 500 очков!'},
+  {label:'ПЛЮС',type:'plus',value:0,desc:'Откройте любую букву'},
+  {label:'×2',type:'multiply',value:2,desc:'Очки удваиваются!'},
+  {label:'0',type:'zero',value:0,desc:'Ноль очков, ход не теряется'},
+  {label:'250',type:'points',value:250,desc:'очков'},{label:'750',type:'points',value:750,desc:'очков'},
+];
+
+const PLAYER_COLORS = ['#d4a843','#e74c3c','#3498db','#2ecc71'];
+
+const WORDS = [
+  {word:'АБРИКОС',cat:'Фрукты'},{word:'БИБЛИОТЕКА',cat:'Учреждения'},{word:'ВЕРТОЛЁТ',cat:'Транспорт'},
+  {word:'ГАРМОНИЯ',cat:'Музыка'},{word:'ДРЕВНОСТЬ',cat:'История'},{word:'ЕЖЕВИКА',cat:'Ягоды'},
+  {word:'ЖИВОПИСЬ',cat:'Искусство'},{word:'ЗОДЧЕСТВО',cat:'Архитектура'},{word:'ИЗОБРЕТЕНИЕ',cat:'Наука'},
+  {word:'КАЛЕЙДОСКОП',cat:'Игрушки'},{word:'ЛАБИРИНТ',cat:'Мифология'},{word:'МАСТЕРСТВО',cat:'Ремёсла'},
+  {word:'НАСТОЯЩЕЕ',cat:'Время'},{word:'ОБЛАКО',cat:'Природа'},{word:'ПРИКЛЮЧЕНИЕ',cat:'Развлечения'},
+  {word:'РЕСТАВРАЦИЯ',cat:'Искусство'},{word:'СОКРОВИЩЕ',cat:'Клад'},{word:'ТЕЛЕСКОП',cat:'Наука'},
+  {word:'УКРАШЕНИЕ',cat:'Мода'},{word:'ФАНТАЗИЯ',cat:'Творчество'},{word:'ХРИЗАНТЕМА',cat:'Цветы'},
+  {word:'ЦАРЕВНА',cat:'Сказки'},{word:'ШОКОЛАД',cat:'Сладости'},{word:'ЩЕДРОСТЬ',cat:'Качества'},
+  {word:'ЭКСПОНАТ',cat:'Музей'},{word:'ЮВЕЛИР',cat:'Профессии'},{word:'ЯБЛОНЯ',cat:'Садоводство'},
+  {word:'ВОЛШЕБСТВО',cat:'Сказки'},{word:'ЗЕРКАЛО',cat:'Интерьер'},{word:'ИНСТРУМЕНТ',cat:'Инструменты'},
+  {word:'КОНФЕТА',cat:'Сладости'},{word:'ЛЕГЕНДА',cat:'Мифология'},{word:'МЕЛОДИЯ',cat:'Музыка'},
+  {word:'НОВОСТРОЙКА',cat:'Архитектура'},{word:'ОТКРЫТКА',cat:'Почта'},{word:'ПАЛИТРА',cat:'Искусство'},
+  {word:'РОМАШКА',cat:'Цветы'},{word:'СКАЗКА',cat:'Литература'},{word:'ТРОПИНКА',cat:'Природа'},
+  {word:'УРОЖАЙ',cat:'Сельское хозяйство'},{word:'ФОНАРИК',cat:'Освещение'},{word:'ХОЛОДИЛЬНИК',cat:'Быт'},
+  {word:'ЦВЕТНИК',cat:'Садоводство'},{word:'ЧАСОВЩИК',cat:'Профессии'},{word:'ШКАФ',cat:'Мебель'},
+];
+
+const state = {
+  players:[], currentPlayer:0, score:0, round:0, streak:0,
+  currentWord:'', currentCategory:'', hiddenLetters:[], revealedLetters:new Set(),
+  guessedLetters:new Set(), isSpinning:false, isWaitingForGuess:false,
+  currentSector:null, plusMode:false, gameOver:false,
+};
+
+const $ = id => document.getElementById(id);
+const canvas = $('wheelCanvas'), ctx = canvas.getContext('2d');
+const ctxConfetti = $('confettiCanvas').getContext('2d');
+
+let wheelAngle = 0, spinVelocity = 0, spinDecay = .985, animId = null, isSpinningAnim = false;
+const MIN_SPIN = .5;
+
+function resizeCanvas() {
+  const r = canvas.parentElement.getBoundingClientRect(), dpr = window.devicePixelRatio||1;
+  canvas.width = r.width*dpr; canvas.height = r.height*dpr;
+  canvas.style.width = r.width+'px'; canvas.style.height = r.height+'px';
+  ctx.scale(dpr,dpr); drawWheel(0);
+}
+
+function drawWheel(angle) {
+  const w = canvas.width/(window.devicePixelRatio||1), h = canvas.height/(window.devicePixelRatio||1);
+  const cx = w/2, cy = h/2, r = Math.min(w,h)/2-4, n = SECTORS.length, arc = 2*Math.PI/n;
+  ctx.clearRect(0,0,w,h);
+  for(let i=0;i<n;i++){
+    const sa=angle+i*arc, ea=sa+arc;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,sa,ea); ctx.closePath();
+    const s=SECTORS[i], hues=[0,40,210,150,280,30,180,330,50,0,210,160];
+    let col;
+    if(s.type==='bankrupt') col='#1a0808';
+    else if(s.type==='prize') col='#0a2a10';
+    else if(s.type==='plus') col='#0a1a30';
+    else if(s.type==='multiply') col='#1a0a30';
+    else if(s.type==='zero') col='#1a1a1a';
+    else col=`hsl(${hues[i%12]},60%,${25+(i%3)*8}%)`;
+    ctx.fillStyle=col; ctx.fill();
+    ctx.strokeStyle='rgba(212,168,67,0.3)'; ctx.lineWidth=1.5; ctx.stroke();
+    const ma=sa+arc/2, lr=r*.65, lx=cx+Math.cos(ma)*lr, ly=cy+Math.sin(ma)*lr;
+    ctx.save(); ctx.translate(lx,ly);
+    ctx.rotate(ma+(ma>Math.PI/2&&ma<3*Math.PI/2?Math.PI:0));
+    ctx.fillStyle='#f0e6d0'; ctx.font=s.label.length>4?'bold 9px Roboto,sans-serif':'bold 11px Roboto,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,0,0,0.8)'; ctx.shadowBlur=3; ctx.fillText(s.label,0,0);
+    ctx.restore();
+  }
+  const g=ctx.createRadialGradient(cx,cy,r*.2,cx,cy,r);
+  g.addColorStop(0,'rgba(26,15,10,0)'); g.addColorStop(1,'rgba(26,15,10,0.15)');
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.fillStyle=g; ctx.fill();
+}
+
+function getSector(angle){
+  const n=SECTORS.length, arc=2*Math.PI/n;
+  let a=(-angle-Math.PI/2)%(2*Math.PI); if(a<0)a+=2*Math.PI;
+  return SECTORS[Math.floor(a/arc)%n];
+}
+
+function spinWheel(){
+  if(isSpinningAnim||state.isSpinning||state.gameOver)return;
+  if(state.isWaitingForGuess||state.plusMode){setStatus('Сначала угадайте букву!','error');return}
+  state.isSpinning=true; isSpinningAnim=true; $('spinBtn').disabled=true;
+  $('sectorResult').classList.remove('show');
+  setStatus('Барабан крутится...','active');
+  spinVelocity=15+Math.random()*20; spinDecay=.975+Math.random()*.015;
+  state.currentSector=null; state.isWaitingForGuess=false; state.plusMode=false;
+  document.querySelectorAll('.letter-btn').forEach(b=>b.disabled=true);
+  function anim(){
+    wheelAngle+=spinVelocity*.02; spinVelocity*=spinDecay; drawWheel(wheelAngle);
+    if(spinVelocity>MIN_SPIN)animId=requestAnimationFrame(anim);
+    else{isSpinningAnim=false;onSectorLanded(getSector(wheelAngle))}
+  }
+  animId=requestAnimationFrame(anim);
+}
+
+function onSectorLanded(sector){
+  const sn=$('sectorName'), sd=$('sectorDesc'), sr=$('sectorResult');
+  sn.textContent=sector.label; sn.className='sector-name'; sd.textContent=sector.desc;
+  if(sector.type==='bankrupt'){
+    sn.classList.add('bankrupt'); state.players[state.currentPlayer].score=0; state.streak=0;
+    updateAll(); setStatus('БАНКРОТ! Очки сгорели!','error'); sr.classList.add('show'); nextPlayer();
+    return;
+  }
+  if(sector.type==='prize'){
+    sn.classList.add('prize'); state.players[state.currentPlayer].score+=500;
+    updateAll(); setStatus('🎁 Приз — 500 очков!','success'); sr.classList.add('show'); nextPlayer();
+    return;
+  }
+  if(sector.type==='zero'){
+    setStatus('0 очков. Крутите ещё!','active'); sr.classList.add('show'); finishRound();
+    return;
+  }
+  if(sector.type==='multiply'){
+    sn.classList.add('prize'); state.players[state.currentPlayer].score*=2;
+    updateAll(); setStatus('×2 Очки удвоены!','success'); sr.classList.add('show'); nextPlayer();
+    return;
+  }
+  if(sector.type==='plus'){
+    sn.classList.add('plus'); sr.classList.add('show');
+    state.plusMode=true; state.isWaitingForGuess=true;
+    setStatus('⭐ Выберите букву, которую хотите открыть!','active'); enableAlphabet(true);
+    return;
+  }
+  sr.classList.add('show'); state.isWaitingForGuess=true;
+  setStatus('Выпало '+sector.value+' очков. Назовите букву!','active'); enableAlphabet(false);
+}
+
+function enableAlphabet(plus){
+  document.querySelectorAll('.letter-btn').forEach(b=>{
+    const l=b.dataset.letter;
+    b.disabled=state.revealedLetters.has(l)||state.guessedLetters.has(l);
+  });
+}
+
+function onLetterClick(letter){
+  if(!state.isWaitingForGuess||state.gameOver||state.guessedLetters.has(letter))return;
+  state.guessedLetters.add(letter);
+  const btn=document.querySelector('.letter-btn[data-letter="'+letter+'"]'); if(!btn)return;
+  btn.disabled=true;
+  const indices=[];
+  for(let i=0;i<state.hiddenLetters.length;i++)if(state.hiddenLetters[i].toLowerCase()===letter.toLowerCase())indices.push(i);
+
+  if(state.plusMode){
+    if(indices.length>0){
+      revealLetters(indices); btn.classList.add('correct');
+      setStatus('Открыто! Осталось '+state.revealedLetters.size+'/'+state.hiddenLetters.length+' букв','success');
+      state.plusMode=false; state.isWaitingForGuess=false;
+      if(checkWin())return; finishRound();
+    } else {
+      btn.classList.add('wrong'); state.guessedLetters.delete(letter);
+      setStatus('Этой буквы нет. Выберите другую!','error'); enableAlphabet(true);
+    }
+    return;
+  }
+
+  if(indices.length>0){
+    btn.classList.add('correct'); revealLetters(indices);
+    const pts=state.currentSector.value*indices.length;
+    state.players[state.currentPlayer].score+=pts; state.streak+=indices.length;
+    updateAll();
+    setStatus('Есть! Буква "'+letter+'" — '+indices.length+' раз(а)! +'+pts+' очков','success');
+    state.isWaitingForGuess=false;
+    if(checkWin())return; finishRound();
+  } else {
+    btn.classList.add('wrong'); state.streak=0; updateAll();
+    setStatus('Нет буквы "'+letter+'"!','error'); state.isWaitingForGuess=false; nextPlayer();
+  }
+}
+
+function revealLetters(indices){
+  const tiles=document.querySelectorAll('.letter-tile');
+  indices.forEach(i=>{
+    const l=state.hiddenLetters[i]; if(state.revealedLetters.has(l.toLowerCase()))return;
+    state.revealedLetters.add(l.toLowerCase());
+    const t=tiles[i]; t.textContent=l; t.classList.remove('hidden');
+    t.classList.add('revealed','reveal-anim');
+  });
+}
+
+function checkWin(){
+  const unique=new Set(state.hiddenLetters.map(l=>l.toLowerCase()));
+  for(const l of unique)if(!state.revealedLetters.has(l))return false;
+  state.gameOver=true;
+  const p=state.players[state.currentPlayer];
+  $('winnerName').textContent = '🏆 Победитель: ' + p.name;
+  $('winnerName').style.color=p.color;
+  $('winWord').textContent=state.currentWord;
+  $('winScore').textContent=p.score;
+  $('winOverlay').classList.add('show');
+  setStatus('🎉 Победа!','success'); $('spinBtn').disabled=true; startConfetti();
+  return true;
+}
+
+function nextPlayer(){
+  state.currentPlayer=(state.currentPlayer+1)%state.players.length;
+  state.streak=0; state.isSpinning=false;
+  updateTurnUI();
+  setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
+}
+
+function finishRound(){
+  state.isSpinning=false;
+  setTimeout(()=>{if(!state.gameOver)$('spinBtn').disabled=false},500);
+}
+
+function updateAll(){
+  $('scoreDisplay').textContent=state.players[state.currentPlayer]?.score||0;
+  $('roundDisplay').textContent=state.round;
+  renderPlayerScores();
+  updateTurnUI();
+}
+
+function updateTurnUI(){
+  const p=state.players[state.currentPlayer];
+  if(p){
+    $('scoreDisplay').textContent=p.score;
+    $('scoreDisplay').style.color=p.color;
+    $('turnIndicator').textContent='🎯 Ход: ' + p.name;
+    $('turnIndicator').style.color=p.color;
+  }
+  document.querySelectorAll('.player-score-card').forEach((c,i)=>{
+    c.classList.toggle('active',i===state.currentPlayer);
+  });
+}
+
+function renderPlayerScores(){
+  const c=$('playersScores'); c.innerHTML='';
+  state.players.forEach((p,i)=>{
+    const d=document.createElement('div'); d.className='player-score-card'+(i===state.currentPlayer?' active':'');
+    d.innerHTML='<div class="p-name">'+p.name+'</div><div class="p-score" style="color:'+p.color+'">'+p.score+'</div><div class="p-turn-label">Сейчас ходит</div>';
+    c.appendChild(d);
+  });
+}
+
+function buildAlphabet(){
+  const a=$('alphabet'); a.innerHTML='';
+  const letters='АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+  for(const l of letters){
+    const btn=document.createElement('button');
+    btn.className='letter-btn'; btn.textContent=l; btn.dataset.letter=l; btn.disabled=true;
+    btn.addEventListener('click',()=>onLetterClick(l));
+    a.appendChild(btn);
+  }
+}
+
+function buildWordBoard(word){
+  const wb=$('wordBoard'); wb.innerHTML=''; state.hiddenLetters=[];
+  for(const ch of word){
+    const t=document.createElement('div'); t.className='letter-tile';
+    if(ch===' '||ch==='-'||ch==="'"){t.classList.add('space');t.textContent=ch}
+    else{t.classList.add('hidden');state.hiddenLetters.push(ch.toUpperCase())}
+    wb.appendChild(t);
+  }
+}
+
+function pickWord(theme,custom){
+  if(custom.word&&custom.word.trim()){
+    return{word:custom.word.trim().toUpperCase(),cat:custom.cat||'Своя тема'};
+  }
+  let pool=theme==='all'?WORDS:WORDS.filter(w=>w.cat===theme);
+  if(pool.length===0)pool=WORDS;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function startGame(){
+  const count=parseInt($('playerCount').value);
+  const inputs=$('playerNames').querySelectorAll('.player-input');
+  state.players=[];
+  for(let i=0;i<count;i++){
+    const name=inputs[i]?.value.trim()||'Игрок '+(i+1);
+    state.players.push({name,score:0,color:PLAYER_COLORS[i]});
+  }
+  state.currentPlayer=0; state.round++; state.streak=0;
+  state.revealedLetters=new Set(); state.guessedLetters=new Set();
+  state.isSpinning=false; state.isWaitingForGuess=false;
+  state.plusMode=false; state.gameOver=false; isSpinningAnim=false;
+  if(animId){cancelAnimationFrame(animId);animId=null}
+
+  const customWord=$('customWord').value.trim();
+  const customCat=$('customCategory').value.trim();
+  const theme=$('themeSelect').value;
+  const entry=pickWord(theme,{word:customWord,cat:customCat});
+  state.currentWord=entry.word; state.currentCategory=entry.cat;
+  buildWordBoard(state.currentWord);
+  document.querySelectorAll('.letter-btn').forEach(b=>{b.disabled=true;b.className='letter-btn'});
+  $('setupScreen').classList.remove('active');
+  $('gameScreen').classList.add('active');
+  updateAll(); $('roundDisplay').textContent=state.round;
+  $('spinBtn').disabled=false; $('sectorResult').classList.remove('show');
+  $('winOverlay').classList.remove('show'); stopConfetti();
+  setStatus('Раунд '+state.round+'. Ход: '+state.players[0].name,'active');
+}
+
+// ---- Setup UI ----
+function setupPlayerUI(){
+  const c=$('playerNames'), count=parseInt($('playerCount').value);
+  c.innerHTML='<label>Имена игроков</label>';
+  for(let i=0;i<count;i++){
+    const r=document.createElement('div'); r.className='player-row';
+    r.innerHTML='<div class="player-num">#'+(i+1)+'</div>'
+      +'<input class="player-input" placeholder="Игрок '+(i+1)+'" value="Игрок '+(i+1)+'" maxlength="20">'
+      +'<div class="player-color" style="background:'+PLAYER_COLORS[i]+'"></div>';
+    c.appendChild(r);
+  }
+}
+
+function populateThemes(){
+  const cats=new Set(WORDS.map(w=>w.cat));
+  const sel=$('themeSelect');
+  cats.forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent='📁 '+c;
+    sel.appendChild(o);
+  });
+}
+
+// ---- Confetti ----
+let confetti=[], cfId=null;
+function startConfetti(){
+  const cc=$('confettiCanvas'); cc.width=window.innerWidth; cc.height=window.innerHeight; confetti=[];
+  const cols=['#d4a843','#f0d080','#e74c3c','#2ecc71','#3498db','#9b59b6','#e67e22','#1abc9c'];
+  for(let i=0;i<150;i++)confetti.push({x:Math.random()*cc.width,y:Math.random()*cc.height-cc.height,w:4+Math.random()*8,h:4+Math.random()*6,color:cols[Math.floor(Math.random()*cols.length)],vx:-2+Math.random()*4,vy:2+Math.random()*3,rot:Math.random()*360,rs:-5+Math.random()*10});
+  animCf();
+}
+function animCf(){
+  ctxConfetti.clearRect(0,0,$('confettiCanvas').width,$('confettiCanvas').height);
+  let any=false;
+  for(const p of confetti){p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.rs;if(p.y<$('confettiCanvas').height+20){any=true;ctxConfetti.save();ctxConfetti.translate(p.x,p.y);ctxConfetti.rotate(p.rot*Math.PI/180);ctxConfetti.fillStyle=p.color;ctxConfetti.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctxConfetti.restore()}}
+  if(any)cfId=requestAnimationFrame(animCf);
+}
+function stopConfetti(){if(cfId){cancelAnimationFrame(cfId);cfId=null}confetti=[];ctxConfetti.clearRect(0,0,$('confettiCanvas').width,$('confettiCanvas').height)}
+
+function setStatus(text,type){
+  const s=$('statusText'); s.textContent=text; s.className='status-text';
+  if(type)s.classList.add(type);
+}
+
+// ---- Init ----
+buildAlphabet(); populateThemes(); setupPlayerUI(); resizeCanvas();
+$('playerCount').addEventListener('change',setupPlayerUI);
+$('startBtn').addEventListener('click',startGame);
+$('spinBtn').addEventListener('click',spinWheel);
+$('playAgainBtn').addEventListener('click',()=>{stopConfetti();$('winOverlay').classList.remove('show');startGame()});
+window.addEventListener('resize',resizeCanvas);
+
+// Rules
+$('rulesBtn').addEventListener('click',()=>$('rulesOverlay').classList.add('show'));
+$('rulesCloseBtn').addEventListener('click',()=>$('rulesOverlay').classList.remove('show'));
+$('rulesOverlay').addEventListener('click',e=>{if(e.target===$('rulesOverlay'))$('rulesOverlay').classList.remove('show')});
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  const k=e.key.toUpperCase();
+  if(k===' '||k==='ENTER'){e.preventDefault();const sb=$('spinBtn');if(!sb.disabled)sb.click();return}
+  const rus='АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШШЬЫЪЭЮЯ';
+  if(rus.includes(k)){const b=document.querySelector('.letter-btn[data-letter="'+k+'"]');if(b&&!b.disabled)b.click()}
+});
+</script>
+</body>
+</html>
