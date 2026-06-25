@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Поле Чудес</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Roboto:wght@400;500;700&display=swap');
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -15,14 +13,14 @@
   --green-bright:#2ecc71; --blue:#2980b9; --text:#f0e6d0; --text-dim:#8a7a60;
 }
 
-body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;background-image:radial-gradient(ellipse at center top,#2d1a10 0%,#1a0f0a 70%);overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;background-image:radial-gradient(ellipse at center top,#2d1a10 0%,#1a0f0a 70%);overflow-x:hidden}
 
 /* ---- Header ---- */
 .header{width:100%;text-align:center;padding:16px 20px 8px;background:linear-gradient(180deg,rgba(212,168,67,0.15) 0%,transparent 100%);position:relative}
-.header h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(212,168,67,0.3),0 2px 4px rgba(0,0,0,0.5);letter-spacing:6px;display:inline-block}
+.header h1{font-family:'Georgia',serif',serif;font-size:2rem;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(212,168,67,0.3),0 2px 4px rgba(0,0,0,0.5);letter-spacing:6px;display:inline-block}
 .header h1 span{color:var(--gold-light)}
 .header-actions{position:absolute;top:50%;right:20px;transform:translateY(-50%);display:flex;gap:8px}
-.btn-ghost{background:transparent;border:1px solid var(--gold-dark);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.78rem;cursor:pointer;font-family:'Roboto',sans-serif;transition:.2s;text-transform:uppercase;letter-spacing:1px}
+.btn-ghost{background:transparent;border:1px solid var(--gold-dark);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:.78rem;cursor:pointer;font-family:'system-ui,sans-serif;transition:.2s;text-transform:uppercase;letter-spacing:1px}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
 
 /* ---- Game Header Bar ---- */
@@ -40,23 +38,23 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 .screen.active{display:flex}
 
 .setup-card{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:1px solid #5a3a20;border-radius:16px;padding:28px 32px;max-width:500px;width:100%}
-.setup-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);margin-bottom:16px;text-align:center}
+.setup-card h2{font-family:'Georgia',serif',serif;font-size:1.4rem;color:var(--gold);margin-bottom:16px;text-align:center}
 
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
 
-.form-select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.95rem;font-family:'Roboto',sans-serif;cursor:pointer;outline:none;transition:.2s}
+.form-select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.95rem;font-family:'system-ui,sans-serif;cursor:pointer;outline:none;transition:.2s}
 .form-select:focus{border-color:var(--gold)}
 .form-select option{background:#2a1810;color:var(--text)}
 
 .player-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
 .player-num{width:28px;text-align:center;color:var(--gold-dark);font-weight:700;font-size:.85rem}
-.player-input{flex:1;padding:8px 12px;border-radius:6px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.9rem;font-family:'Roboto',sans-serif;outline:none;transition:.2s}
+.player-input{flex:1;padding:8px 12px;border-radius:6px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.9rem;font-family:'system-ui,sans-serif;outline:none;transition:.2s}
 .player-input:focus{border-color:var(--gold)}
 .player-input::placeholder{color:#5a3a20}
 .player-color{width:24px;height:24px;border-radius:50%;border:2px solid #5a3a20;flex-shrink:0}
 
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 30px;border:none;border-radius:8px;font-family:'Roboto',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:1px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 30px;border:none;border-radius:8px;font-family:'system-ui,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:1px}
 .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;box-shadow:0 4px 15px rgba(212,168,67,0.3)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(212,168,67,0.4)}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
@@ -69,13 +67,13 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 .wheel-inner{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:#1a0f0a}
 #wheelCanvas{width:100%;height:100%;display:block}
 
-.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f0d080,#a07830);border:3px solid #d4a843;box-shadow:0 0 20px rgba(212,168,67,0.4);z-index:5;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:#1a0f0a}
+.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#f0d080,#a07830);border:3px solid #d4a843;box-shadow:0 0 20px rgba(212,168,67,0.4);z-index:5;display:flex;align-items:center;justify-content:center;font-family:'Georgia',serif',serif;font-size:1.1rem;font-weight:900;color:#1a0f0a}
 .pointer{position:absolute;top:-20px;left:50%;transform:translateX(-50%);z-index:10;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:26px solid var(--gold);filter:drop-shadow(0 2px 6px rgba(0,0,0,0.6))}
 .pointer::after{content:'';position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--gold)}
 
 .sector-result{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(26,15,10,0.92);border:2px solid var(--gold);border-radius:14px;padding:16px 28px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s;min-width:180px;backdrop-filter:blur(8px)}
 .sector-result.show{opacity:1;pointer-events:auto}
-.sector-result .sector-name{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold-light);margin-bottom:2px}
+.sector-result .sector-name{font-family:'Georgia',serif',serif;font-size:1.4rem;font-weight:700;color:var(--gold-light);margin-bottom:2px}
 .sector-result .sector-desc{font-size:.85rem;color:var(--text-dim)}
 .sector-result .sector-name.bankrupt{color:var(--red-bright)}
 .sector-result .sector-name.prize{color:var(--green-bright)}
@@ -83,7 +81,7 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 
 /* ---- Word Board ---- */
 .word-board{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;padding:10px 0;min-height:70px}
-.letter-tile{width:42px;height:50px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;font-family:'Playfair Display',serif;text-transform:uppercase;border-radius:6px;transition:.5s cubic-bezier(.34,1.56,.64,1);position:relative}
+.letter-tile{width:42px;height:50px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;font-family:'Georgia',serif',serif;text-transform:uppercase;border-radius:6px;transition:.5s cubic-bezier(.34,1.56,.64,1);position:relative}
 .letter-tile.hidden{background:linear-gradient(145deg,#3a2518,#2a1810);border:2px solid #5a3a20;color:transparent;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .letter-tile.hidden::after{content:'?';position:absolute;color:var(--gold-dark);font-size:.9rem;opacity:.5}
 .letter-tile.revealed{background:linear-gradient(145deg,#3a2a15,#2a1a0a);border:2px solid var(--gold);color:var(--gold-light);box-shadow:0 0 12px rgba(212,168,67,0.2);transform:scale(1.03)}
@@ -94,7 +92,7 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 
 /* ---- Alphabet ---- */
 .alphabet{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:520px;padding:4px 0}
-.letter-btn{width:34px;height:36px;border:1px solid #5a3a20;border-radius:4px;background:linear-gradient(145deg,#3a2518,#2a1810);color:var(--text);font-size:.88rem;font-weight:500;cursor:pointer;transition:.15s;text-transform:uppercase;font-family:'Roboto',sans-serif;padding:0}
+.letter-btn{width:34px;height:36px;border:1px solid #5a3a20;border-radius:4px;background:linear-gradient(145deg,#3a2518,#2a1810);color:var(--text);font-size:.88rem;font-weight:500;cursor:pointer;transition:.15s;text-transform:uppercase;font-family:'system-ui,sans-serif;padding:0}
 .letter-btn:hover:not(:disabled){background:linear-gradient(145deg,#5a3a20,#3a2518);border-color:var(--gold);transform:translateY(-1px)}
 .letter-btn:disabled{opacity:.22;cursor:not-allowed;background:#1a0f0a;border-color:#2a1a10}
 .letter-btn.correct{opacity:1!important;background:linear-gradient(145deg,#1a4a20,#0a2a10)!important;border-color:var(--green)!important;color:var(--green-bright)!important}
@@ -114,14 +112,14 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 .status-text.success{color:var(--green-bright)}
 
 /* ---- Section titles ---- */
-.section-title{font-family:'Playfair Display',serif;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:3px;margin-top:4px}
+.section-title{font-family:'Georgia',serif',serif;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:3px;margin-top:4px}
 
 /* ---- Players Score Table ---- */
 .players-scores{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;width:100%;padding:4px 0}
 .player-score-card{border:1px solid #5a3a20;border-radius:10px;padding:8px 16px;text-align:center;min-width:80px;transition:.3s;background:linear-gradient(145deg,#2d1a10,#1a0f0a)}
 .player-score-card.active{border-color:var(--gold);box-shadow:0 0 15px rgba(212,168,67,0.2)}
 .player-score-card .p-name{font-size:.75rem;color:var(--text-dim);margin-bottom:2px}
-.player-score-card .p-score{font-size:1.3rem;font-weight:700;font-family:'Playfair Display',serif}
+.player-score-card .p-score{font-size:1.3rem;font-weight:700;font-family:'Georgia',serif',serif}
 .player-score-card .p-turn-label{font-size:.55rem;text-transform:uppercase;color:var(--gold);letter-spacing:1px;display:none}
 .player-score-card.active .p-turn-label{display:block}
 
@@ -130,9 +128,9 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 .win-overlay.show{display:flex}
 .win-modal{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:2px solid var(--gold);border-radius:20px;padding:36px 44px;text-align:center;max-width:420px;box-shadow:0 0 60px rgba(212,168,67,0.2);animation:winZoom .5s cubic-bezier(.34,1.56,.64,1)}
 @keyframes winZoom{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
-.win-modal h2{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);margin-bottom:6px}
+.win-modal h2{font-family:'Georgia',serif',serif;font-size:2rem;color:var(--gold);margin-bottom:6px}
 .win-modal .winner-name{font-size:1.1rem;color:var(--gold-light);margin-bottom:4px}
-.win-modal .word-answer{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold-light);margin:8px 0;letter-spacing:4px;text-transform:uppercase}
+.win-modal .word-answer{font-family:'Georgia',serif',serif;font-size:1.6rem;color:var(--gold-light);margin:8px 0;letter-spacing:4px;text-transform:uppercase}
 .win-modal .score-final{font-size:1rem;color:var(--text-dim);margin:4px 0 16px}
 .win-modal .score-final span{color:var(--gold-light);font-size:1.3rem;font-weight:700}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;padding:12px 32px}
@@ -142,9 +140,9 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
 .rules-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 .rules-overlay.show{display:flex}
 .rules-modal{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:2px solid var(--gold);border-radius:20px;padding:32px 36px;max-width:560px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:0 0 60px rgba(212,168,67,0.2)}
-.rules-modal h2{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);margin-bottom:14px;text-align:center}
+.rules-modal h2{font-family:'Georgia',serif',serif;font-size:1.6rem;color:var(--gold);margin-bottom:14px;text-align:center}
 .rules-section{margin-bottom:16px}
-.rules-section h3{font-size:1rem;color:var(--gold-light);margin-bottom:6px;font-family:'Playfair Display',serif}
+.rules-section h3{font-size:1rem;color:var(--gold-light);margin-bottom:6px;font-family:'Georgia',serif',serif}
 .rules-section ul{list-style:none;padding:0}
 .rules-section li{padding:3px 0 3px 20px;position:relative;font-size:.88rem;color:var(--text-dim);line-height:1.5}
 .rules-section li::before{content:'◆';position:absolute;left:0;color:var(--gold-dark);font-size:.6rem;top:7px}
@@ -220,8 +218,8 @@ body{background:var(--bg);color:var(--text);font-family:'Roboto',sans-serif;min-
       <div class="form-group">
         <label>Или своё слово</label>
         <div style="display:flex;gap:8px">
-          <input class="form-select" id="customWord" placeholder="Введите слово..." style="flex:1;font-family:'Roboto',sans-serif">
-          <input class="form-select" id="customCategory" placeholder="Категория" style="width:120px;font-family:'Roboto',sans-serif">
+          <input class="form-select" id="customWord" placeholder="Введите слово..." style="flex:1;font-family:'system-ui,sans-serif">
+          <input class="form-select" id="customCategory" placeholder="Категория" style="width:120px;font-family:'system-ui,sans-serif">
         </div>
       </div>
 
