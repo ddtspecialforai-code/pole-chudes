@@ -196,7 +196,7 @@ body{background:var(--bg);color:var(--text);font-family:'system-ui',sans-serif;m
 
       <div class="form-group">
         <label>Количество игроков</label>
-        <select class="form-select" id="playerCount">
+        <select class="form-select" id="playerCount" onchange="setupPlayerUI()">
           <option value="1">1 игрок</option>
           <option value="2" selected>2 игрока</option>
           <option value="3">3 игрока</option>
@@ -613,9 +613,11 @@ function startGame(){
   const count=parseInt($('playerCount').value);
   const inputs=$('playerNames').querySelectorAll('.player-input');
   state.players=[];
+  const colorPickers=$('playerNames').querySelectorAll('.player-color-picker');
   for(let i=0;i<count;i++){
     const name=inputs[i]?.value.trim()||'Игрок '+(i+1);
-    state.players.push({name,score:0,color:PLAYER_COLORS[i]});
+    const color=colorPickers[i]?.value||PLAYER_COLORS[i];
+    state.players.push({name,score:0,color});
   }
   state.currentPlayer=0; state.round++; state.streak=0;
   state.revealedLetters=new Set(); state.guessedLetters=new Set();
@@ -648,7 +650,7 @@ function setupPlayerUI(){
     const r=document.createElement('div'); r.className='player-row';
     r.innerHTML='<div class="player-num">#'+(i+1)+'</div>'
       +'<input class="player-input" placeholder="Игрок '+(i+1)+'" value="Игрок '+(i+1)+'" maxlength="20">'
-      +'<div class="player-color" style="background:'+PLAYER_COLORS[i]+'"></div>';
+      +'<input type="color" class="player-color-picker" value="'+PLAYER_COLORS[i]+'">';
     c.appendChild(r);
   }
 }
