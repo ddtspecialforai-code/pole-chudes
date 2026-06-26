@@ -394,11 +394,11 @@ function onSectorLanded(sector){
         for(let i=0;i<state.hiddenLetters.length;i++)
           if(state.hiddenLetters[i].toLowerCase()===luckyLetter)allIdx.push(i);
         revealLetters(allIdx);
-        state.revealedLetters.add(luckyLetter);
         setStatus('⭐ Открыта буква "'+luckyLetter.toUpperCase()+'"!','success');
-        checkWin();
+        if(!checkWin())finishRound();
+      } else {
+        finishRound();
       }
-      finishRound();
     },600);
     return;
   }
