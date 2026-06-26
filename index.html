@@ -28,7 +28,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
 .form-group label{display:block;font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
 .form-select{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.95rem;font-family:system-ui,sans-serif;cursor:pointer;outline:none;transition:.2s}
 .form-select:focus{border-color:var(--gold)}.form-select option{background:#2a1810;color:var(--text)}
-.player-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.player-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
 .player-num{width:28px;text-align:center;color:var(--gold-dark);font-weight:700;font-size:.85rem}
 .player-input{flex:1;padding:8px 12px;border-radius:6px;border:1px solid #5a3a20;background:#2a1810;color:var(--text);font-size:.9rem;font-family:system-ui,sans-serif;outline:none;transition:.2s}
 .player-input:focus{border-color:var(--gold)}.player-input::placeholder{color:#5a3a20}
@@ -335,8 +335,25 @@ function onSectorLanded(sector){
   }
   if(sector.type==='plus'){
     sn.classList.add('plus'); sr.classList.add('show');
-    state.plusMode=true; state.isWaitingForGuess=true;
-    setStatus('⭐ Выберите букву, которую хотите открыть!','active'); enableAlphabet(true);
+    setStatus('⭐ ПЛЮС — открываем случайную букву!','active');
+    setTimeout(()=>{
+      const hidden=[];
+      for(let i=0;i<state.hiddenLetters.length;i++){
+        const l=state.hiddenLetters[i].toLowerCase();
+        if(!state.revealedLetters.has(l))hidden.push(i);
+      }
+      if(hidden.length>0){
+        const pick=hidden[Math.floor(Math.random()*hidden.length)];
+        const luckyLetter=state.hiddenLetters[pick].toLowerCase();
+        const allIdx=[];
+        for(let i=0;i<state.hiddenLetters.length;i++)
+          if(state.hiddenLetters[i].toLowerCase()===luckyLetter)allIdx.push(i);
+        revealLetters(allIdx);
+        setStatus('⭐ Открыта буква "'+luckyLetter.toUpperCase()+'"!','success');
+        if(checkWin())return;
+      }
+      finishRound();
+    },600);
     return;
   }
   sr.classList.add('show'); state.isWaitingForGuess=true;
