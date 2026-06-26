@@ -456,7 +456,7 @@ function onLetterClick(letter){
 function revealLetters(indices){
   const tiles=document.querySelectorAll('.letter-tile');
   indices.forEach(i=>{
-    const l=state.hiddenLetters[i]; if(state.revealedLetters.has(l.toLowerCase()))return;
+    const l=state.hiddenLetters[i];
     state.revealedLetters.add(l.toLowerCase());
     const t=tiles[i]; t.textContent=l; t.classList.remove('hidden');
     t.classList.add('revealed','reveal-anim');
