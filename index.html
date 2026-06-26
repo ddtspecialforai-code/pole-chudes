@@ -216,14 +216,21 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
 </div>
 <script>
 const SECTORS = [
-  {label:'100',type:'points',value:100,desc:'очков'},{label:'200',type:'points',value:200,desc:'очков'},
-  {label:'300',type:'points',value:300,desc:'очков'},{label:'500',type:'points',value:500,desc:'очков'},
-  {label:'1000',type:'points',value:1000,desc:'очков'},{label:'БАНКРОТ',type:'bankrupt',value:0,desc:'Все очки сгорают!'},
-  {label:'ПРИЗ',type:'prize',value:0,desc:'Вы получаете приз — 500 очков!'},
-  {label:'ПЛЮС',type:'plus',value:0,desc:'Откройте любую букву'},
-  {label:'×2',type:'multiply',value:2,desc:'Очки удваиваются!'},
-  {label:'0',type:'zero',value:0,desc:'Ноль очков, ход не теряется'},
-  {label:'250',type:'points',value:250,desc:'очков'},{label:'750',type:'points',value:750,desc:'очков'},
+  {label:"400",type:'points',value:400,desc:"очков"},
+  {label:"ПРИЗ",type:'prize',value:0,desc:"+500 очков!"},
+  {label:"250",type:'points',value:250,desc:"очков"},
+  {label:"БАНКРОТ",type:'bankrupt',value:0,desc:"Все очки сгорают!"},
+  {label:"100",type:'points',value:100,desc:"очков"},
+  {label:"ПЛЮС",type:'plus',value:0,desc:"Авто-открытие буквы"},
+  {label:"400",type:'points',value:400,desc:"очков"},
+  {label:"×2",type:'multiply',value:2,desc:"Очки удваиваются!"},
+  {label:"300",type:'points',value:300,desc:"очков"},
+  {label:"300",type:'points',value:300,desc:"очков"},
+  {label:"500",type:'points',value:500,desc:"очков"},
+  {label:"250",type:'points',value:250,desc:"очков"},
+  {label:"0",type:'zero',value:0,desc:"Ноль очков, ход не теряется"},
+  {label:"100",type:'points',value:100,desc:"очков"},
+  {label:"500",type:'points',value:500,desc:"очков"}
 ];
 const PLAYER_COLORS = ['#d4a843','#e74c3c','#3498db','#2ecc71'];
 const WORDS = [
@@ -268,7 +275,7 @@ function drawWheel(angle) {
   for(let i=0;i<n;i++){
     const sa=angle+i*arc, ea=sa+arc;
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,sa,ea); ctx.closePath();
-    const s=SECTORS[i], hues=[0,40,210,150,280,30,180,330,50,0,210,160];
+    const s=SECTORS[i], hues=[0,40,210,150,280,30,180,330,50,0,210,160,60,120,200,270];
     let col;
     if(s.type==='bankrupt') col='#1a0808';
     else if(s.type==='prize') col='#0a2a10';
