@@ -69,6 +69,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
 .letter-btn.wrong{opacity:.3!important;background:linear-gradient(145deg,#4a1a10,#2a0a00)!important;border-color:var(--red)!important}
 .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:2px 0}
 .btn-spin{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#1a0f0a;font-size:1.05rem;padding:12px 32px;box-shadow:0 4px 15px rgba(212,168,67,0.3)}
+#endGameBtn:hover{border-color:var(--gold)!important;color:var(--gold)!important}
 .btn-spin:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 25px rgba(212,168,67,0.4)}
 .btn-spin:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .status-box{text-align:center;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:500px}
@@ -180,8 +181,9 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
         <div class="sector-desc" id="sectorDesc">очков</div>
       </div>
     </div>
-    <div class="controls">
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:2px 0">
       <button class="btn btn-spin" id="spinBtn" onclick="spinWheel()">Крутить барабан!</button>
+      <button class="btn" id="endGameBtn" onclick="endGame()" style="background:transparent;color:var(--text-dim);border:1px solid #5a3a20;padding:10px 18px;font-size:.85rem">🚪 Закончить игру</button>
     </div>
     <div class="status-box">
       <div class="status-text" id="statusText">Нажмите «Крутить барабан!»</div>
@@ -378,22 +380,23 @@ function onSectorLanded(sector){
   }
   if(sector.type==='plus'){
     sn.classList.add('plus'); sr.classList.add('show');
-    setStatus('⭐ ПЛЮС — открываем случайную букву!','active');
+    setStatus('⭐ ПЛЮС!','active');
     setTimeout(()=>{
-      const hidden=[];
+      let firstHidden=-1;
       for(let i=0;i<state.hiddenLetters.length;i++){
-        const l=state.hiddenLetters[i].toLowerCase();
-        if(!state.revealedLetters.has(l))hidden.push(i);
+        if(!state.revealedLetters.has(state.hiddenLetters[i].toLowerCase())){
+          firstHidden=i; break;
+        }
       }
-      if(hidden.length>0){
-        const pick=hidden[Math.floor(Math.random()*hidden.length)];
-        const luckyLetter=state.hiddenLetters[pick].toLowerCase();
+      if(firstHidden>-1){
+        const luckyLetter=state.hiddenLetters[firstHidden].toLowerCase();
         const allIdx=[];
         for(let i=0;i<state.hiddenLetters.length;i++)
           if(state.hiddenLetters[i].toLowerCase()===luckyLetter)allIdx.push(i);
         revealLetters(allIdx);
+        state.revealedLetters.add(luckyLetter);
         setStatus('⭐ Открыта буква "'+luckyLetter.toUpperCase()+'"!','success');
-        if(checkWin())return;
+        checkWin();
       }
       finishRound();
     },600);
@@ -470,6 +473,7 @@ function checkWin(){
   $('winScore').textContent=p.score;
   $('winOverlay').classList.add('show');
   setStatus('🎉 Победа!','success'); $('spinBtn').disabled=true; startConfetti();
+  setTimeout(backToSetup, 3000);
   return true;
 }
 function nextPlayer(){
@@ -592,7 +596,7 @@ function setStatus(text,type){
   const s=$('statusText'); s.textContent=text; s.className='status-text';
   if(type)s.classList.add(type);
 }
-function playAgain(){stopConfetti();$('winOverlay').classList.remove('show');startGame()}
+function playAgain(){backToSetup()}
 let confetti=[], cfId=null;
 function startConfetti(){
   const cc=$('confettiCanvas'); cc.width=window.innerWidth; cc.height=window.innerHeight; confetti=[];
@@ -608,6 +612,21 @@ function animCf(){
 }
 function stopConfetti(){if(cfId){cancelAnimationFrame(cfId);cfId=null}confetti=[];ctxConfetti.clearRect(0,0,$('confettiCanvas').width,$('confettiCanvas').height)}
 
+
+function endGame(){backToSetup()}
+function backToSetup(){
+  stopConfetti();
+  $('winOverlay').classList.remove('show');
+  $('gameScreen').classList.remove('active');
+  $('setupScreen').classList.add('active');
+  setupPlayerUI();
+  state.players=[]; state.revealedLetters=new Set(); state.guessedLetters=new Set();
+  state.isSpinning=false; state.isWaitingForGuess=false; state.gameOver=false;
+  state.currentSector=null; state.plusMode=false; isSpinningAnim=false;
+  if(animId){cancelAnimationFrame(animId);animId=null}
+  setStatus('Настройте игру и нажмите «Начать игру!»','active');
+  document.querySelectorAll('.letter-btn').forEach(b=>{b.disabled=true;b.className='letter-btn'});
+}
 buildAlphabet(); populateThemes(); setupPlayerUI(); resizeCanvas();
 $('playerCount').addEventListener('change',setupPlayerUI);
 $('startBtn').addEventListener('click',startGame);
