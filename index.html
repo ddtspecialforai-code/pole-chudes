@@ -100,12 +100,19 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
 .rules-modal{background:linear-gradient(145deg,#2d1a10,#1a0f0a);border:2px solid var(--gold);border-radius:20px;padding:32px 36px;max-width:560px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:0 0 60px rgba(212,168,67,0.2)}
 .rules-modal h2{font-family:'Georgia','Times New Roman',serif;font-size:1.6rem;color:var(--gold);margin-bottom:14px;text-align:center}
 .rules-section{margin-bottom:16px}
-.rules-section h3{font-size:1rem;color:var(--gold-light);margin-bottom:6px;font-family:'Georgia','Times New Roman',serif}
+.rules-header{margin-bottom:16px;text-align:center}
+.rules-header h2{font-family:'Georgia','Times New Roman',serif;font-size:1.6rem;color:var(--gold)}
+.rules-body{max-height:50vh;overflow-y:auto;padding-right:4px}
+.rules-body::-webkit-scrollbar{width:4px}
+.rules-body::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px}
+.rules-section{margin-bottom:16px}
+.rules-section-title{font-size:1rem;color:var(--gold-light);margin-bottom:6px;font-weight:700;font-family:'Georgia','Times New Roman',serif}
+.rules-section p{font-size:.88rem;color:var(--text);line-height:1.6;margin-bottom:6px}
 .rules-section ul{list-style:none;padding:0}
-.rules-section li{padding:3px 0 3px 20px;position:relative;font-size:.88rem;color:var(--text-dim);line-height:1.5}
-.rules-section li::before{content:'\u25c6';position:absolute;left:0;color:var(--gold-dark);font-size:.6rem;top:7px}
-.rules-section p{font-size:.88rem;color:var(--text-dim);line-height:1.5}
-.rules-close{display:flex;justify-content:center;margin-top:14px}
+.rules-section li{padding:4px 0 4px 20px;position:relative;font-size:.88rem;color:var(--text-dim);line-height:1.5}
+.rules-section li::before{content:'\25c6';position:absolute;left:0;color:var(--gold-dark);font-size:.6rem;top:8px}
+.rules-section li b{color:var(--gold-light)}
+.rules-close{display:flex;justify-content:center;margin-top:16px}
 @media(max-width:500px){
 .header h1{font-size:1.4rem;letter-spacing:3px}
 .header-actions{position:static;transform:none;justify-content:center;margin-top:6px}
@@ -196,23 +203,52 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
   </div>
 </div>
 <div class="rules-overlay" id="rulesOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div<div class="rules-overlay" id="rulesOverlay">
   <div class="rules-modal">
-    <h2>📖 Правила игры</h2>
-    <div class="rules-section"><h3>🎯 Цель игры</h3><p>Отгадать загаданное слово, называя буквы по одной. Побеждает игрок, который откроет последнюю букву слова.</p></div>
-    <div class="rules-section"><h3>🎡 Барабан</h3><p>Перед ходом игрок крутит барабан, который определяет цену угаданной буквы или специальный сектор.</p>
-    <ul><li><b>Очки (100–1000)</b> — назвав букву, игрок получает эту сумму, умноженную на количество таких букв в слове</li>
-    <li><b>БАНКРОТ</b> — все очки игрока сгорают, ход переходит к следующему</li>
-    <li><b>ПРИЗ</b> — игрок получает 500 очков</li>
-    <li><b>ПЛЮС</b> — можно открыть любую букву бесплатно</li>
-    <li><b>×2</b> — очки игрока удваиваются</li>
-    <li><b>0</b> — ход без последствий</li></ul></div>
-    <div class="rules-section"><h3>🔤 Угадывание</h3>
-    <ul><li>После остановки барабана игрок называет букву</li><li>Если буква есть в слове — она открывается, игрок получает очки</li><li>Если угадал — ходит снова</li><li>Если ошибся — ход переходит</li></ul></div>
-    <div class="rules-section"><h3>👥 Очередь</h3>
-    <ul><li>Игроки ходят по кругу</li><li>После правильной буквы игрок ходит снова</li><li>После ошибки, банкрота или приза ход переходит</li></ul></div>
-    <div class="rules-section"><h3>🏆 Победа</h3><p>Игрок, открывший последнюю букву, побеждает! Можно начать новый раунд.</p></div>
-    <div class="rules-close"><button class="btn btn-gold" id="rulesCloseBtn" onclick="document.getElementById('rulesOverlay').classList.remove('show')">Понятно!</button></div>
+    <div class="rules-header"><h2>📖 Правила игры</h2></div>
+    <div class="rules-body">
+      <div class="rules-section">
+        <div class="rules-section-title">🎯 Цель игры</div>
+        <p>Отгадать загаданное слово, называя буквы по одной. Побеждает игрок, который откроет последнюю букву слова.</p>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">🎡 Барабан</div>
+        <p>Перед ходом игрок крутит барабан, который определяет цену угаданной буквы или специальный сектор.</p>
+        <ul>
+          <li><b>Очки (100–500)</b> — назвав букву, игрок получает эту сумму × количество таких букв в слове</li>
+          <li><b>БАНКРОТ</b> — все очки игрока сгорают, ход переходит к следующему</li>
+          <li><b>ПРИЗ</b> — игрок получает 500 очков</li>
+          <li><b>ПЛЮС</b> — автоматически открывается случайная скрытая буква</li>
+          <li><b>×2</b> — очки игрока удваиваются</li>
+          <li><b>0</b> — ход без последствий, можно крутить снова</li>
+        </ul>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">🔤 Угадывание</div>
+        <ul>
+          <li>После остановки барабана игрок называет букву русского алфавита</li>
+          <li>Если буква есть в слове — она открывается, игрок получает очки</li>
+          <li>Если угадал — ходит снова</li>
+          <li>Если ошибся — ход переходит к следующему игроку</li>
+          <li>Нельзя называть уже открытую или уже названную букву</li>
+        </ul>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">👥 Очередь</div>
+        <ul>
+          <li>Игроки ходят по очереди по кругу</li>
+          <li>После правильной буквы игрок ходит снова</li>
+          <li>После ошибки, банкрота или приза ход переходит</li>
+        </ul>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">🏆 Победа</div>
+        <p>Игрок, открывший последнюю букву слова, побеждает! Его счёт фиксируется, и можно начать новый раунд.</p>
+      </div>
+    </div>
+    <div class="rules-close"><button class="btn btn-gold" id="rulesCloseBtn" onclick="document.getElementById('rulesOverlay').classList.remove('show')">Закрыть</button></div>
   </div>
+</div></div>
 </div>
 <script>
 const SECTORS = [
