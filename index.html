@@ -130,7 +130,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
 <canvas id="confettiCanvas"></canvas>
 <div class="header">
   <h1>ПОЛЕ <span>ЧУДЕС</span></h1>
-  <div class="header-actions"><button class="btn-ghost" id="rulesBtn">📖 Правила</button></div>
+  <div class="header-actions"><button class="btn-ghost" id="rulesBtn" onclick="document.getElementById('rulesOverlay').classList.add('show')">📖 Правила</button></div>
 </div>
 <div class="game-header" id="gameHeader">
   <div class="stat"><div class="val" id="scoreDisplay">0</div><div class="lbl">Очки</div></div>
@@ -143,7 +143,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
       <h2>🎡 Настройка игры</h2>
       <div class="form-group">
         <label>Количество игроков</label>
-        <select class="form-select" id="playerCount">
+        <select class="form-select" id="playerCount" onchange="setupPlayerUI()">
           <option value="1">1 игрок</option><option value="2" selected>2 игрока</option>
           <option value="3">3 игрока</option><option value="4">4 игрока</option>
         </select>
@@ -195,7 +195,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
     <button class="btn btn-gold" id="playAgainBtn" onclick="playAgain()">Играть ещё</button>
   </div>
 </div>
-<div class="rules-overlay" id="rulesOverlay">
+<div class="rules-overlay" id="rulesOverlay" onclick="if(event.target===this)this.classList.remove('show')">
   <div class="rules-modal">
     <h2>📖 Правила игры</h2>
     <div class="rules-section"><h3>🎯 Цель игры</h3><p>Отгадать загаданное слово, называя буквы по одной. Побеждает игрок, который откроет последнюю букву слова.</p></div>
@@ -211,7 +211,7 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min
     <div class="rules-section"><h3>👥 Очередь</h3>
     <ul><li>Игроки ходят по кругу</li><li>После правильной буквы игрок ходит снова</li><li>После ошибки, банкрота или приза ход переходит</li></ul></div>
     <div class="rules-section"><h3>🏆 Победа</h3><p>Игрок, открывший последнюю букву, побеждает! Можно начать новый раунд.</p></div>
-    <div class="rules-close"><button class="btn btn-gold" id="rulesCloseBtn">Понятно!</button></div>
+    <div class="rules-close"><button class="btn btn-gold" id="rulesCloseBtn" onclick="document.getElementById('rulesOverlay').classList.remove('show')">Понятно!</button></div>
   </div>
 </div>
 <script>
@@ -573,7 +573,7 @@ $('playAgainBtn').addEventListener('click',playAgain);
 window.addEventListener('resize',resizeCanvas);
 $('rulesBtn').addEventListener('click',()=>$('rulesOverlay').classList.add('show'));
 $('rulesCloseBtn').addEventListener('click',()=>$('rulesOverlay').classList.remove('show'));
-$('rulesOverlay').addEventListener('click',e=>{if(e.target===$('rulesOverlay'))$('rulesOverlay').classList.remove('show')});
+
 document.addEventListener('keydown',e=>{
   const k=e.key.toUpperCase();
   if(k===' '||k==='ENTER'){e.preventDefault();const sb=$('spinBtn');if(!sb.disabled)sb.click();return}
